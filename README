@@ -1,1 +1,9 @@
+Fonctionnement du convertisseur (version c)
 
+- lancer executable : ./pdftotext_c 'nom_répertoire'
+
+- renseigner l'option de conversion désirée
+
+1 pas d'option
+2 -layout
+3 -row
