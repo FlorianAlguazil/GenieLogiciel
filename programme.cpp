@@ -4,8 +4,10 @@
 #include <string>
 #include <vector>
 #include <filesystem>
+#include <chrono>
 
 namespace fs = std::filesystem;
+using namespace std::chrono;
 
 int main(int argc, char* argv[]) {
     if (argc != 2) {
@@ -20,7 +22,6 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    // Create a subdirectory for the text files if it doesn't exist
     std::string output_directory = directory_path + "/text_output";
     if (fs::exists(output_directory)) {
         fs::remove_all(output_directory);
@@ -29,7 +30,6 @@ int main(int argc, char* argv[]) {
 
     std::vector<std::string> pdf_files;
 
-    // Find all PDF files in the specified directory
     for (const auto& entry : fs::directory_iterator(directory_path)) {
         if (entry.is_regular_file() && entry.path().extension() == ".pdf") {
             pdf_files.push_back(entry.path().string());
@@ -49,6 +49,8 @@ int main(int argc, char* argv[]) {
         std::cerr << "Invalid option. Please choose between 1 and 3." << std::endl;
         return 1;
     }
+
+    auto start_time = high_resolution_clock::now();
 
     for (const std::string& pdf_file : pdf_files) {
         std::string pdf_name = fs::path(pdf_file).filename();
@@ -71,6 +73,11 @@ int main(int argc, char* argv[]) {
             std::cerr << "Error converting " << pdf_name << " to text." << std::endl;
         }
     }
+
+    auto end_time = high_resolution_clock::now();
+    auto duration = duration_cast<nanoseconds>(end_time - start_time);
+
+    std::cout << "Time taken: " << duration.count() << " nanoseconds" << std::endl;
 
     return 0;
 }
