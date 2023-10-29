@@ -1,1 +1,5 @@
+Notre script python prend en argument un nom de dossier contenant un ensemble de pdf, il créera dans ce répertoire un sous-dossier qui contiendra les nouveaux fichiers transformés au format .txt.
 
+Notre code fonctionne avec l'outil pdftotext de Poppler.
+Pour l'exécuter veuillez vous rendre dans le répertoire contenant le dossier et tapez la commande suivante dans le terminal : python3 pdftotext.py CORPUS_TRAIN
+  

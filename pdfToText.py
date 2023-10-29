@@ -1,40 +1,47 @@
+#!/usr/bin/python
+
 import os
 import subprocess
-import sys
-import time
+import argparse
+from pathlib import Path
 
-def convert_pdfs_to_text(input_folder):
-    for pdf_file in os.listdir(input_folder):
-        if pdf_file.endswith(".pdf"):
-            pdf_path = os.path.join(input_folder, pdf_file)
-            txt_file = os.path.splitext(pdf_file)[0] + ".txt"
-            txt_path = os.path.join(input_folder, "text_files", txt_file)
+import abstract
 
-            # Crée un sous-dossier "text_files" dans le dossier d'entrée si nécessaire
-            text_files_folder = os.path.join(input_folder, "text_files")
-            if not os.path.exists(text_files_folder):
-                os.makedirs(text_files_folder)
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("path", help="chemin vers le dossier contenant les pdfs")
+    args = parser.parse_args()
+    path = args.path
 
-            # Utilisez pdftotext pour convertir le PDF en texte
-            subprocess.call(["pdftotext", pdf_path, txt_path])
+    if not os.path.exists(path + "_output"):
+        os.makedirs(path + "_output")
+    elif os.listdir(path + "_output"):
+        for file in os.listdir(path + "_output"):
+            os.remove(path + "_output/" + file)
 
-if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage: python pdf_to_text.py input_folder")
-        sys.exit(1)
+    for file in os.listdir(path):
+        if file.endswith(".pdf"):
+            print("Processing file: " + file)
+            pdf_file = Path(path + "/" + file)
+            txt_file = Path(path + "_output/" + file + ".txt")
+            if not txt_file.is_file():
+                subprocess.call(["pdftotext", "-raw", pdf_file, txt_file])
+                print ("fichier temporaire crée: " + str(txt_file))
+            else:
+                print("Fichier déjà existant: " + str(txt_file))
+        
+            pdftotext_file = open(txt_file, 'r')
+            output_file = open(path+'_output/'+str(Path(os.path.basename(pdf_file)).stem)+'.txt', 'w+')
+        
+            output_file.write(os.path.basename(pdf_file).replace(' ', '_') + '\n')
+    
+            title = pdftotext_file.readline().strip()+pdftotext_file.readline().strip()
+            output_file.write(title + '\n')
 
-    input_folder = sys.argv[1]
+            output_file.write(abstract.readAbstract(pdftotext_file))
 
-    if not os.path.exists(input_folder):
-        print(f"Le dossier d'entrée '{input_folder}' n'existe pas.")
-        sys.exit(1)
-
-    start_time = time.time()
-
-    convert_pdfs_to_text(input_folder)
-
-    end_time = time.time()
-    elapsed_time = end_time - start_time
-    print(f"Conversion terminée en {elapsed_time:.2f} secondes.")
-
-
+            pdftotext_file.close()
+            output_file.close()
+            os.remove(txt_file)
+            
+main()
