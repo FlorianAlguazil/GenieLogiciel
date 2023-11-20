@@ -3,4 +3,5 @@ GUIDE UTILISATION : -- mettre dans un répertoire les fichiers abstract.py et co
                     -- ouvrir une fenêtre de terminal dans le répertoire
                     -- taper "python3 convert.py NOM_DU_REPERTOIRE_PDF -x" pour convertir les fichiers en xml
                     -- taper "python3 convert.py NOM_DU_REPERTOIRE_PDF -t" pour convertir les fichiers en txt
+                    -- le menu s'ouvre et liste tous les fichiers du répertoire avec un numéro attitré, taper les numéros associés au fichiers à convertir suivis d'espaces
                     -- les fichiers convertis apparaitront dans un répertoire _TXT ou _XML selon l'extension choisie, contenu dans le répertoire PDF
